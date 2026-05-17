@@ -64,15 +64,16 @@ if not exist "%PYTHON%" (
         exit /b 1
     )
 
-    :: Install pip and platformio into portable Python
-    echo Installing pip and platformio...
-    "%PYTHON%" -m ensurepip 2>nul
-    if %ERRORLEVEL% neq 0 (
-        uv pip install --python "%PYTHON%" pip
+    :: Remove PEP 668 marker so we can install packages into this Python
+    if exist "%PYTHON_DIR%\Lib\EXTERNALLY-MANAGED" (
+        del "%PYTHON_DIR%\Lib\EXTERNALLY-MANAGED"
     )
-    "%PYTHON%" -m pip install platformio --quiet
+
+    :: Install pip and platformio via uv (works without pip pre-installed)
+    echo Installing pip and platformio...
+    uv pip install --python "%PYTHON%" pip platformio
     if %ERRORLEVEL% neq 0 (
-        echo Error: Failed to install platformio.
+        echo Error: Failed to install packages.
         exit /b 1
     )
 
@@ -83,14 +84,20 @@ if not exist "%PYTHON%" (
     echo.
 )
 
-:: Step 2: Download PlatformIO packages and build
+:: Step 2: Download PlatformIO packages and libraries
 echo [2/2] Downloading PlatformIO packages and libraries...
 echo.
 "%PYTHON%" -m platformio run --project-dir "%PROJECT_DIR%"
 if %ERRORLEVEL% neq 0 (
-    echo.
-    echo Init failed. Check errors above.
-    exit /b 1
+    :: Check if packages were downloaded despite build failure (e.g. no source code)
+    if exist "%PLATFORMIO_CORE_DIR%\packages\toolchain-gccarmnoneeabi" (
+        echo.
+        echo Packages downloaded successfully. Build skipped (no source code or compile error).
+    ) else (
+        echo.
+        echo Init failed: packages not installed. Check errors above.
+        exit /b 1
+    )
 )
 
 echo.
