@@ -13,14 +13,14 @@ set "PROJECT_INI=%PROJECT_DIR%\platformio.ini"
 echo ========================================
 echo   PlatformIO Environment Init
 echo ========================================
-echo.
+echo/
 echo Project dir: %PROJECT_DIR%
-echo.
+echo/
 
 :: Step 0: Check project exists
 if not exist "%PROJECT_INI%" (
     echo Error: %PROJECT_INI% not found.
-    echo.
+    echo/
     echo Please add your PlatformIO project to project\src\ first.
     echo The project must include platformio.ini with board and library config.
     exit /b 1
@@ -29,7 +29,7 @@ if not exist "%PROJECT_INI%" (
 :: Step 1: Set up portable Python
 if not exist "%PYTHON%" (
     echo [1/2] Setting up portable Python 3.14...
-    echo.
+    echo/
 
     :: Check for uv
     where uv >nul 2>&1
@@ -40,7 +40,7 @@ if not exist "%PYTHON%" (
         exit /b 1
     )
 
-    :: Install full Python via uv (includes DLLs that embeddable Python lacks)
+    rem Install full Python via uv (includes DLLs that embeddable Python lacks)
     echo Installing Python 3.14 via uv...
     uv python install 3.14.5
     if %ERRORLEVEL% neq 0 (
@@ -69,7 +69,7 @@ if not exist "%PYTHON%" (
         del "%PYTHON_DIR%\Lib\EXTERNALLY-MANAGED"
     )
 
-    :: Install pip and platformio via uv (works without pip pre-installed)
+    rem Install pip and platformio via uv (works without pip pre-installed)
     echo Installing pip and platformio...
     uv pip install --python "%PYTHON%" pip platformio
     if %ERRORLEVEL% neq 0 (
@@ -78,29 +78,29 @@ if not exist "%PYTHON%" (
     )
 
     echo Python setup complete.
-    echo.
+    echo/
 ) else (
     echo Python already set up: %PYTHON%
-    echo.
+    echo/
 )
 
 :: Step 2: Download PlatformIO packages and libraries
 echo [2/2] Downloading PlatformIO packages and libraries...
-echo.
+echo/
 "%PYTHON%" -m platformio run --project-dir "%PROJECT_DIR%"
 if %ERRORLEVEL% neq 0 (
-    :: Check if packages were downloaded despite build failure (e.g. no source code)
+    rem Check if packages were downloaded despite build failure
     if exist "%PLATFORMIO_CORE_DIR%\packages\toolchain-gccarmnoneeabi" (
-        echo.
+        echo/
         echo Packages downloaded successfully. Build skipped (no source code or compile error).
     ) else (
-        echo.
+        echo/
         echo Init failed: packages not installed. Check errors above.
         exit /b 1
     )
 )
 
-echo.
+echo/
 echo ========================================
 echo   Init complete.
 echo   The project folder can now be copied
