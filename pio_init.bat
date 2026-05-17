@@ -47,7 +47,7 @@ if not exist "%PYTHON%" (
 
     rem Install full Python via uv (includes DLLs that embeddable Python lacks)
     echo Installing Python 3.14 via uv...
-    uv python install 3.14.5
+    uv python install 3.14.5 --no-shim
     if %ERRORLEVEL% neq 0 (
         echo Error: Failed to install Python.
         exit /b 1
