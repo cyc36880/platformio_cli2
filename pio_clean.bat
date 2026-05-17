@@ -38,14 +38,14 @@ if exist "%SCRIPT_DIR%\.uv" (
 
 :: -f: also remove downloaded libraries (requires network to restore)
 if /i "%1"=="-f" (
-    echo/
-    echo Force mode: removing libdeps (will need network to restore)...
+    echo.
+    echo Force mode: removing libdeps ^(will need network to restore^)...
     if exist "%PROJECT_DIR%\.pio" (
         rmdir /s /q "%PROJECT_DIR%\.pio"
     )
 )
 
-echo/
+echo.
 echo ========================================
 echo   Clean complete.
 echo ========================================

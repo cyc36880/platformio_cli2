@@ -23,7 +23,7 @@ set "PORT=%1"
 if "%PORT%"=="" (
     echo Usage: %~nx0 COM_PORT
     echo Example: %~nx0 COM3
-    echo/
+    echo.
     echo Available ports:
     "%PYTHON%" -m platformio device list
     exit /b 1
