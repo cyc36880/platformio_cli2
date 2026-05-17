@@ -1,0 +1,18 @@
+# Init downloads — not tracked in git
+python/
+.platformio/
+
+# User project files
+project/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# Windows
+Thumbs.db
+Desktop.ini

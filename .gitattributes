@@ -1,0 +1,5 @@
+# Text files — consistent line endings
+*.bat text eol=crlf
+*.md text eol=lf
+*.py text eol=lf
+*.ini text eol=lf
