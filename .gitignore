@@ -1,6 +1,7 @@
 # Init downloads — not tracked in git
 python/
 .platformio/
+.uv/
 
 # User project files
 project/

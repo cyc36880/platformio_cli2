@@ -40,6 +40,11 @@ if not exist "%PYTHON%" (
         exit /b 1
     )
 
+    rem Confine all uv caches to project directory
+    set "UV_PYTHON_INSTALL_DIR=%SCRIPT_DIR%\.uv\python"
+    set "UV_CACHE_DIR=%SCRIPT_DIR%\.uv\cache"
+    set "UV_LINK_MODE=copy"
+
     rem Install full Python via uv (includes DLLs that embeddable Python lacks)
     echo Installing Python 3.14 via uv...
     uv python install 3.14.5
@@ -48,15 +53,13 @@ if not exist "%PYTHON%" (
         exit /b 1
     )
 
-    :: Find uv-managed Python directory
-    for /f "delims=" %%i in ('uv python dir') do set "UV_ROOT=%%i"
-    set "UV_PYTHON=!UV_ROOT!\cpython-3.14.5-windows-x86_64-none"
+    rem Copy Python from uv-managed location to project python/ directory
+    set "UV_PYTHON=!UV_PYTHON_INSTALL_DIR!\cpython-3.14.5-windows-x86_64-none"
     if not exist "!UV_PYTHON!\python.exe" (
-        echo Error: Could not locate uv-managed Python at !UV_PYTHON!
+        echo Error: Could not locate Python at !UV_PYTHON!
         exit /b 1
     )
 
-    :: Copy to project python/ directory
     echo Copying Python to project...
     xcopy /e /i /q "!UV_PYTHON!" "%PYTHON_DIR%"
     if %ERRORLEVEL% neq 0 (
@@ -92,7 +95,7 @@ if %ERRORLEVEL% neq 0 (
     rem Check if packages were downloaded despite build failure
     if exist "%PLATFORMIO_CORE_DIR%\packages\toolchain-gccarmnoneeabi" (
         echo/
-        echo Packages downloaded successfully. Build skipped (no source code or compile error).
+        echo Packages downloaded successfully. Build skipped - no source code or compile error
     ) else (
         echo/
         echo Init failed: packages not installed. Check errors above.

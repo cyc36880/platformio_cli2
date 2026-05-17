@@ -30,6 +30,12 @@ if exist "%PLATFORMIO_CORE_DIR%\tmp" (
     rmdir /s /q "%PLATFORMIO_CORE_DIR%\tmp"
 )
 
+:: uv cache (Python install + pip download cache, safe to delete)
+if exist "%SCRIPT_DIR%\.uv" (
+    echo Removing uv cache...
+    rmdir /s /q "%SCRIPT_DIR%\.uv"
+)
+
 :: -f: also remove downloaded libraries (requires network to restore)
 if /i "%1"=="-f" (
     echo/
