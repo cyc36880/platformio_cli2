@@ -28,7 +28,7 @@ if not exist "%PROJECT_INI%" (
 
 :: Step 1: Set up portable Python
 if not exist "%PYTHON%" (
-    echo [1/2] Setting up portable Python 3.14...
+    echo [1/2] Setting up portable Python 3.12...
     echo.
 
     :: Check for uv
@@ -46,15 +46,15 @@ if not exist "%PYTHON%" (
     set "UV_LINK_MODE=copy"
 
     rem Install full Python via uv (includes DLLs that embeddable Python lacks)
-    echo Installing Python 3.14 via uv...
-    uv python install 3.14.5 --no-bin
+    echo Installing Python 3.12.12 via uv...
+    uv python install 3.12.12 --no-bin
     if %ERRORLEVEL% neq 0 (
         echo Error: Failed to install Python.
         exit /b 1
     )
 
     rem Copy Python from uv-managed location to project python/ directory
-    set "UV_PYTHON=!UV_PYTHON_INSTALL_DIR!\cpython-3.14.5-windows-x86_64-none"
+    set "UV_PYTHON=!UV_PYTHON_INSTALL_DIR!\cpython-3.12.12-windows-x86_64-none"
     if not exist "!UV_PYTHON!\python.exe" (
         echo Error: Could not locate Python at !UV_PYTHON!
         exit /b 1
